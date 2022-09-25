@@ -338,6 +338,7 @@ but without connecting to the started nREPL server.
 - [#3061](https://github.com/clojure-emacs/cider/issues/3061): Allow to use `cider-connect-clj` for self-hosted cljs repls (e.g. `nbb`).
 - [#3291](https://github.com/clojure-emacs/cider/pull/3291): **Remove** the `'cljs-pending` `repl-type`. It is replaced by `cider-repl-cljs-upgrade-pending`.
 - [#3261](https://github.com/clojure-emacs/cider/issues/3261): If user is connecting to nREPL from a TRAMP buffer, use its connection parameters (port, username) for establishing SSH tunnel.
+- Emptiness at the beginning and end of history
 
 ### Bugs fixed
 
