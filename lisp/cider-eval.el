@@ -416,6 +416,20 @@ COMMENT-POSTFIX is the text to output after the last line."
                      ;; truncated-handler form passed through.
                      (setq res (concat res nil))))))
 
+(defun cider-remove-popup-buffer (chosen-buffer)
+  "Remove popup buffer"
+  (when (and (buffer-live-p chosen-buffer)
+             (member (buffer-name chosen-buffer)
+                     cider-ancillary-buffers))
+    (with-selected-window (get-buffer-window chosen-buffer)
+      (cider-popup-buffer-quit-function t))))
+
+(defvar cider-popup-eval-error-handler-function
+  (lambda (chosen-buffer)
+    (cider-remove-popup-buffer chosen-buffer))
+  "What to do after an error when evaluating to cider-result-buffer.
+nil keeps the buffer.")
+
 (defun cider-popup-eval-handler (&optional buffer _bounds source-buffer)
   "Make a handler for printing evaluation results in popup BUFFER,
 _BOUNDS representing the buffer bounds of the evaled input,
@@ -432,11 +446,8 @@ This is used by pretty-printing commands."
      :on-stdout #'cider-emit-interactive-eval-output
      :on-stderr #'cider-emit-interactive-eval-err-output
      :on-eval-error (lambda ()
-                      (when (and (buffer-live-p chosen-buffer)
-                                 (member (buffer-name chosen-buffer)
-                                         cider-ancillary-buffers))
-                        (with-selected-window (get-buffer-window chosen-buffer)
-                          (cider-popup-buffer-quit-function t)))
+                      (when cider-popup-eval-error-handler-function
+                        (funcall cider-popup-eval-error-handler-function chosen-buffer))
                       ;; also call the default nrepl-err-handler-function so
                       ;; our custom behavior doesn't void the base behavior:
                       (when nrepl-err-handler-function
