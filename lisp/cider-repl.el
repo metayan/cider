@@ -1770,7 +1770,9 @@ If REGEXP is non-nil, only lines matching REGEXP are considered."
            (cider-repl--replace-input (nth pos cider-repl-input-history))
            (setq msg (format "History item: %d" pos)))
           ((not cider-repl-wrap-history)
-           (setq msg (cond ((= pos min-pos) "End of history")
+           (setq msg (cond ((= pos min-pos)
+                            (cider-repl--replace-input "")
+                            "End of history")
                            ((= pos max-pos) "Beginning of history"))))
           (cider-repl-wrap-history
            (setq pos (if (= pos min-pos) max-pos min-pos))
